@@ -12,4 +12,6 @@ export const sendMessage = async (payload: {
             "Content-Type": "application/json"
         }
     })
+    const data = await response.data;
+    return data;
 }

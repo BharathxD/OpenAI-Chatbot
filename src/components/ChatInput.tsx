@@ -2,8 +2,10 @@
 
 import { cn } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { FC, HTMLAttributes, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
+import { sendMessage } from "../../api";
 
 /**
  *  The `interface ChatInputProps` is defining the props that can be passed to the `ChatInput` component.
@@ -15,11 +17,11 @@ interface ChatInputProps extends HTMLAttributes<HTMLDivElement> {}
 
 const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
   const [input, setInput] = useState<string>("");
-  const { mutate: sendMessage, isLoading } = useMutation({
-    mutationFn: async () => {
-      
-    },
-  });
+  const { mutate, isLoading } = useMutation<
+    string,
+    AxiosError,
+    Parameters<typeof sendMessage>["0"]
+  >(sendMessage, {});
   return (
     <div {...props} className={cn("border-t border-zinc-300", className)}>
       <div className="relative mt-4 flex-1 overflow-hidden rounded-lg border-none outline-none">
