@@ -1,19 +1,25 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { useMutation } from "@tanstack/react-query";
 import { FC, HTMLAttributes, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 
 /**
- *  The `interface ChatInputProps` is defining the props that can be passed to the `ChatInput` component. 
- * It extends the `HTMLAttributes<HTMLDivElement>` interface, which means that it inherits all the props that can be passed to a 
+ *  The `interface ChatInputProps` is defining the props that can be passed to the `ChatInput` component.
+ * It extends the `HTMLAttributes<HTMLDivElement>` interface, which means that it inherits all the props that can be passed to a
  * `div` element, such as `className`, `style`, `onClick`, etc.
- * This allows the `ChatInput` component to accept any props that a `div` element can accept, in addition to any custom props that may be defined specifically for the `ChatInput` component. 
-*/
+ * This allows the `ChatInput` component to accept any props that a `div` element can accept, in addition to any custom props that may be defined specifically for the `ChatInput` component.
+ */
 interface ChatInputProps extends HTMLAttributes<HTMLDivElement> {}
 
 const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
   const [input, setInput] = useState<string>("");
+  const { mutate: sendMessage, isLoading } = useMutation({
+    mutationFn: async () => {
+      
+    },
+  });
   return (
     <div {...props} className={cn("border-t border-zinc-300", className)}>
       <div className="relative mt-4 flex-1 overflow-hidden rounded-lg border-none outline-none">
