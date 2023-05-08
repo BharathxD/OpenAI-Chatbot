@@ -6,6 +6,7 @@ import { AxiosError } from "axios";
 import { FC, HTMLAttributes, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { sendMessage } from "../../api";
+import { randomUUID } from "crypto";
 
 /**
  *  The `interface ChatInputProps` is defining the props that can be passed to the `ChatInput` component.
@@ -21,11 +22,26 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
     string,
     AxiosError,
     Parameters<typeof sendMessage>["0"]
-  >(sendMessage, {});
+  >(sendMessage, {
+    onSuccess: () => {
+      console.log("Success sending the message!");
+    },
+  });
   return (
     <div {...props} className={cn("border-t border-zinc-300", className)}>
       <div className="relative mt-4 flex-1 overflow-hidden rounded-lg border-none outline-none">
         <TextareaAutosize
+          onKeyDown={(event) => {
+            if (event.key === "Enter" && !event.shiftKey) {
+              event.preventDefault();
+              const message = {
+                id: `message_${randomUUID()}`,
+                isUserInput: true,
+                text: input,
+              };
+              mutate(message);
+            }
+          }}
           rows={2}
           maxRows={4}
           placeholder={"Write a message..."}
