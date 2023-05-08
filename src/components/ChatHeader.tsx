@@ -1,3 +1,5 @@
+"use client";
+
 const ChatHeader = () => {
   return (
     <div className="w-full flex gap-3 justify-start items-center text-zinc-800">

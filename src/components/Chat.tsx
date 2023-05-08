@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Accordion,
   AccordionContent,
@@ -23,7 +25,7 @@ const Chat = () => {
             <AccordionContent>
               <div className="flex flex-col h-80">
                 Messages
-                <ChatInput className="px-4"/>
+                <ChatInput className="px-4" />
               </div>
             </AccordionContent>
           </div>
