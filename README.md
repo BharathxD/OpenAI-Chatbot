@@ -1,34 +1,21 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# OpenAI Chatbot
 
-## Getting Started
+![OpenAI Logo](./OpenAI.png)
 
-First, run the development server:
+If you are building a chatbot or any other conversational AI application, OpenAI is a great resource to consider. With OpenAI's powerful artificial intelligence technology, you can create chatbots that can understand natural language and generate human-like responses.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+## Note
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+However, there are a few things to note before you start using the OpenAI API for your chatbot. First and foremost, you need to ensure that your OpenAI Credits have not expired. If your credits have been exhausted, your API requests will be denied until you purchase more credits. You can check your credit usage by clicking on the following link: https://platform.openai.com/account/usage.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Additionally, you need to generate an API Key to make API requests to the OpenAI API. To generate an API Key, click on the following link: https://platform.openai.com/account/api-keys.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Setting up Environment variables
 
-## Learn More
+To set up this environment variable, you can create a .env file in the root directory of your project and add the following line:
 
-To learn more about Next.js, take a look at the following resources:
+makefile
+Copy code
+OPENAI_API_KEY=<your-api-key>
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Replace <your-api-key> with the actual API key that you obtained from the OpenAI website. Make sure to keep this key secure and do not share it with others, as it provides access to your OpenAI account and usage.
