@@ -1,7 +1,8 @@
 "use server"
 
 import { chatbotPrompt } from "@/helpers/constants/chatbot-prompt";
-import { ChatGPTMessage, OpenAIStreamPayload } from "@/lib/openai-stream";
+import { ChatGPTMessage } from "@/lib/openai-stream";
+import { OpenAIStreamPayload } from "@/lib/openai";
 import { MessageArraySchema } from "@/lib/validators/message";
 import OpenAIStream from "@/lib/openai-stream";
 
@@ -18,7 +19,7 @@ export async function POST(req: Request) {
      * It is using the `map()` method to iterate over each message in the `parsedMessages` array and create a new `ChatGPTMessage` object
      * for each one. 
     */
-    const outbountMessages: ChatGPTMessage[] = parsedMessages.map((message) => ({
+    const outboundMessages: ChatGPTMessage[] = parsedMessages.map((message) => ({
         role: message.isUserMessage ? "user" : "system",
         content: message.text
     }));
@@ -27,8 +28,9 @@ export async function POST(req: Request) {
      * This new message has a `role` of "system" and a `content` of `chatbotPrompt`, which is a constant that likely contains a prompt or
      * greeting for the chatbot.
      * This ensures that the chatbot's initial message is always the first message in the conversation. 
+     * Example: [4, 5, 6] -> After Unshift [1, 2, 3, 4, 5, 6]
     */
-    outbountMessages.unshift({
+    outboundMessages.unshift({
         role: "system",
         content: chatbotPrompt,
     })
@@ -37,14 +39,14 @@ export async function POST(req: Request) {
     */
     const payload: OpenAIStreamPayload = {
         model: 'gpt-3.5-turbo',
-        messages: outbountMessages,
+        messages: outboundMessages,
         temperature: 0.4,
         top_p: 1,
         frequency_penalty: 0,
         presence_penalty: 0,
         max_tokens: 150,
         stream: true,
-        n: 1
+        n: 1,
     }
     const stream = await OpenAIStream(payload);
     return new Response(stream);
