@@ -23,3 +23,15 @@ OPENAI_API_KEY=<your-api-key>
 ```
 
 Replace <your-api-key> with the actual API key that you obtained from the OpenAI website. Make sure to keep this key secure and do not share it with others, as it provides access to your OpenAI account and usage.
+
+## Don't use Axios!
+
+Axios is a popular JavaScript library for making HTTP requests. However, by default, it does not support streaming of HTTP responses.
+
+When a request is made with Axios, it sends the entire request payload to the server and waits for the entire response to be received before returning it as a single response object. This approach works well for small responses, but it can be inefficient and slow for large responses or responses that take a long time to generate.
+
+Streaming, on the other hand, allows the client to start receiving the response as soon as the server starts sending it. This can be much more efficient and faster for large or slow responses because the client can start processing the response before the entire response has been received.
+
+To add support for streaming in Axios, significant modifications would be required to the Axios source code. These modifications would need to include changes to the request and response handling code, as well as changes to the Axios interface and documentation.
+
+In summary, while it is possible to modify Axios to add support for streaming, it would require a significant amount of work and would likely involve modifying the Axios source code directly. If you need to stream responses, it may be easier to use a different HTTP client that already supports streaming, such as fetch() or http.request() in Node.js.
