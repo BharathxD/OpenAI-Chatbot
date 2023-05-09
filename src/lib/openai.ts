@@ -1,5 +1,4 @@
-import axios, { AxiosResponse } from "axios";
-import { ChatCompletionResponseMessage, CreateChatCompletionRequest, CreateChatCompletionResponse } from "openai";
+import { ChatCompletionResponseMessage, CreateChatCompletionRequest } from "openai";
 
 
 const OPENAI_COMPLETIONS_API_ENDPOINT = `https://api.openai.com/v1/chat/completions`;
@@ -18,20 +17,20 @@ export interface OpenAIStreamPayload {
 
 export const getOpenAICompletion = async (
   payload: CreateChatCompletionRequest
-): Promise<CreateChatCompletionResponse | undefined> => {
+): Promise<ReadableStream<Uint8Array> | undefined> => {
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${process.env.OPENAI_API_KEY ?? ""}`,
+  };
   try {
-    const response: AxiosResponse<CreateChatCompletionResponse> = await axios.post(
-      OPENAI_COMPLETIONS_API_ENDPOINT,
-      payload,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY ?? ""}`,
-        },
-      }
-    );
-    const data = response.data;
-    return data;
+    const response = await fetch(OPENAI_COMPLETIONS_API_ENDPOINT, {
+      headers,
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+    if (response.body) {
+      return response.body;
+    }
   } catch (error: any) {
     console.error("Error getting OpenAI completion:", error.message);
   }

@@ -16,14 +16,7 @@ const OpenAIStream = async (
     let counter = 0;
 
     // Get OpenAI completion response
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${process.env.OPENAI_API_KEY ?? ""}`,
-        },
-        method: "POST",
-        body: JSON.stringify(payload),
-    });
+    const response: ReadableStream<Uint8Array> | undefined = await getOpenAICompletion(payload);
 
     /**
      * This code is creating a new `ReadableStream` object with an `async start` function that will be
@@ -91,7 +84,7 @@ const OpenAIStream = async (
              * This allows the code to process the OpenAI API response in real-time as it arrives, rather than waiting for the entire
              * response to be received before processing it.
              */
-            for await (const chunk of response.body as any) {
+            for await (const chunk of response as any) {
                 parser.feed(decoder.decode(chunk));
             }
         },

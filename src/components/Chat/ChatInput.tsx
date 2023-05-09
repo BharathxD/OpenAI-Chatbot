@@ -6,7 +6,7 @@ import { AxiosError } from "axios";
 import { FC, HTMLAttributes, KeyboardEvent, useState } from "react";
 import { nanoid } from "nanoid";
 import TextareaAutosize from "react-textarea-autosize";
-import { sendMessage } from "../api";
+import { sendMessage } from "@/api";
 import { Message } from "@/lib/validators/message";
 
 /**

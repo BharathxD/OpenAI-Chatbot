@@ -47,10 +47,5 @@ export async function POST(req: Request, res: Response) {
   };
   const stream = await OpenAIStream(payload);
 
-  return new Response(stream, {
-    headers: {
-      'Transfer-Encoding': 'chunked',
-      'Content-Type': 'application/json'
-    }
-  });
+  return new Response(stream);
 }
