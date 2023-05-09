@@ -1,13 +1,12 @@
-"use server";
-
 import axios, { AxiosResponse } from "axios";
-import { ChatGPTMessage } from "./openai-stream";
+import { ChatCompletionResponseMessage, CreateChatCompletionRequest, CreateChatCompletionResponse } from "openai";
+
 
 const OPENAI_COMPLETIONS_API_ENDPOINT = `https://api.openai.com/v1/chat/completions`;
 
 export interface OpenAIStreamPayload {
   model: string;
-  messages: ChatGPTMessage[];
+  messages: ChatCompletionResponseMessage[];
   temperature: number;
   top_p: number;
   frequency_penalty: number;
@@ -18,10 +17,10 @@ export interface OpenAIStreamPayload {
 }
 
 export const getOpenAICompletion = async (
-  payload: OpenAIStreamPayload
-): Promise<any> => {
+  payload: CreateChatCompletionRequest
+): Promise<CreateChatCompletionResponse | undefined> => {
   try {
-    const response: AxiosResponse = await axios.post(
+    const response: AxiosResponse<CreateChatCompletionResponse> = await axios.post(
       OPENAI_COMPLETIONS_API_ENDPOINT,
       payload,
       {
@@ -31,7 +30,8 @@ export const getOpenAICompletion = async (
         },
       }
     );
-    return await response.data;
+    const data = response.data;
+    return data;
   } catch (error: any) {
     console.error("Error getting OpenAI completion:", error.message);
   }

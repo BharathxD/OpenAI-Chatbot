@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Providers>
-        <body className={inter.className} suppressHydrationWarning={true}>
+        <body className={inter.className}>
           <Chat />
           {children}
         </body>

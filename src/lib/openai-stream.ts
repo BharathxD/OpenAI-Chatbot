@@ -1,24 +1,14 @@
-"use server";
-
 import {
     ParsedEvent,
     ReconnectInterval,
     createParser,
 } from "eventsource-parser";
-import { OpenAIStreamPayload, getOpenAICompletion } from "./openai";
-
-// Define chat agent types
-export type ChatGPTAgent = "user" | "system";
-
-// Define chat message interface
-export interface ChatGPTMessage {
-    role: ChatGPTAgent;
-    content: string;
-}
+import { getOpenAICompletion } from "./openai";
+import { CreateChatCompletionRequest, CreateChatCompletionResponse } from "openai";
 
 // Define function to create OpenAI stream
 const OpenAIStream = async (
-    payload: OpenAIStreamPayload
+    payload: CreateChatCompletionRequest
 ): Promise<ReadableStream<any>> => {
     // Initialize encoder and decoder for text encoding/decoding
     const encoder = new TextEncoder();
@@ -26,7 +16,14 @@ const OpenAIStream = async (
     let counter = 0;
 
     // Get OpenAI completion response
-    const response = await getOpenAICompletion(payload);
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.OPENAI_API_KEY ?? ""}`,
+        },
+        method: "POST",
+        body: JSON.stringify(payload),
+    });
 
     /**
      * This code is creating a new `ReadableStream` object with an `async start` function that will be
@@ -57,7 +54,8 @@ const OpenAIStream = async (
                      * @see https://platform.openai.com/docs/api-reference/completions/create#completions/create-stream
                      */
                     if (data === "[DONE]") {
-                        return controller.close();
+                        controller.close();
+                        return;
                     }
                     try {
                         const json = JSON.parse(data);
@@ -93,14 +91,11 @@ const OpenAIStream = async (
              * This allows the code to process the OpenAI API response in real-time as it arrives, rather than waiting for the entire
              * response to be received before processing it.
              */
-            //? Feed response data to parser as it arrives
-            console.log(response);
-            for await (const chunk of response as any) {
-                parser.feed(chunk);
+            for await (const chunk of response.body as any) {
+                parser.feed(decoder.decode(chunk));
             }
         },
     });
-
     return stream;
 };
 

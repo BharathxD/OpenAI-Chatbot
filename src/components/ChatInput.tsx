@@ -20,17 +20,15 @@ interface ChatInputProps extends HTMLAttributes<HTMLDivElement> {}
 
 const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
   const [input, setInput] = useState<string>("");
-  const { mutate, isLoading } = useMutation<string, AxiosError, Message>(
-    sendMessage,
-    {
-      onSuccess: () => {
-        console.log("Success sending the message!");
-      },
-      onError: () => {
-        console.error("Error sending the message!");
-      },
-    }
-  );
+  const { mutate, isLoading } = useMutation(sendMessage, {
+    onSuccess: async (stream) => {
+      if (!stream) throw new Error("No Stream Found");
+    },
+
+    onError: () => {
+      console.error("Error sending the message!");
+    },
+  });
   const handleMessageInput = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     //? Triggers if users performs `Enter` Keyboard event. but not `Shift` and `Enter` Event
     if (event.key === "Enter" && !event.shiftKey) {

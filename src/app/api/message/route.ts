@@ -1,12 +1,9 @@
-"use server";
-
 import { chatbotPrompt } from "@/helpers/constants/chatbot-prompt";
-import { ChatGPTMessage } from "@/lib/openai-stream";
-import { OpenAIStreamPayload } from "@/lib/openai";
 import { MessageArraySchema } from "@/lib/validators/message";
 import OpenAIStream from "@/lib/openai-stream";
+import { ChatCompletionResponseMessage, CreateChatCompletionRequest } from "openai";
 
-export async function POST(req: Request) {
+export async function POST(req: Request, res: Response) {
   const { messages } = await req.json();
   /**
    * `MessageArraySchema.parse(message)` is parsing the `message` object received in the request body using the
@@ -19,7 +16,7 @@ export async function POST(req: Request) {
    * It is using the `map()` method to iterate over each message in the `parsedMessages` array and create a new `ChatGPTMessage` object
    * for each one.
    */
-  const outboundMessages: ChatGPTMessage[] = parsedMessages.map((message) => ({
+  const outboundMessages: ChatCompletionResponseMessage[] = parsedMessages.map((message) => ({
     role: message.isUserMessage ? "user" : "system",
     content: message.text,
   }));
@@ -37,7 +34,7 @@ export async function POST(req: Request) {
   /**
    * This contains various properties used to configure and send a request to the OpenAI API.
    */
-  const payload: OpenAIStreamPayload = {
+  const payload: CreateChatCompletionRequest = {
     model: "gpt-3.5-turbo",
     messages: outboundMessages,
     temperature: 0.4,
@@ -49,5 +46,11 @@ export async function POST(req: Request) {
     n: 1,
   };
   const stream = await OpenAIStream(payload);
-  return new Response(stream);
+
+  return new Response(stream, {
+    headers: {
+      'Transfer-Encoding': 'chunked',
+      'Content-Type': 'application/json'
+    }
+  });
 }
