@@ -94,8 +94,9 @@ const OpenAIStream = async (
              * response to be received before processing it.
              */
             //? Feed response data to parser as it arrives
+            console.log(response);
             for await (const chunk of response as any) {
-                parser.feed(decoder.decode(chunk));
+                parser.feed(chunk);
             }
         },
     });
