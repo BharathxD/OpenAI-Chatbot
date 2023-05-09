@@ -5,10 +5,10 @@ import axios from "axios";
 
 const base = process.env.NEXT_PUBLIC_API_ENDPOINT;
 
-const chatBase = `${base}/api/message`;
+const CHAT_API_ENDPOINT = `${base}/api/message`;
 
 export const sendMessage = async (payload: Message) => {
-  const response = await axios.post(chatBase, payload, {
+  const response = await axios.post(CHAT_API_ENDPOINT, payload, {
     headers: {
       "Content-Type": "application/json",
     },
