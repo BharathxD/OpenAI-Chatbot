@@ -1,6 +1,10 @@
-"use server"
+"use server";
 
-import { ParsedEvent, ReconnectInterval, createParser } from "eventsource-parser";
+import {
+    ParsedEvent,
+    ReconnectInterval,
+    createParser,
+} from "eventsource-parser";
 import { OpenAIStreamPayload, getOpenAICompletion } from "./openai";
 
 // Define chat agent types
@@ -13,7 +17,9 @@ export interface ChatGPTMessage {
 }
 
 // Define function to create OpenAI stream
-const OpenAIStream = async (payload: OpenAIStreamPayload): Promise<ReadableStream<any>> => {
+const OpenAIStream = async (
+    payload: OpenAIStreamPayload
+): Promise<ReadableStream<any>> => {
     // Initialize encoder and decoder for text encoding/decoding
     const encoder = new TextEncoder();
     const decoder = new TextDecoder();
@@ -24,8 +30,8 @@ const OpenAIStream = async (payload: OpenAIStreamPayload): Promise<ReadableStrea
 
     /**
      * This code is creating a new `ReadableStream` object with an `async start` function that will be
-     * called when the stream is started. 
-     * The `start` function takes a `controller` parameter, which is used to control the stream. 
+     * called when the stream is started.
+     * The `start` function takes a `controller` parameter, which is used to control the stream.
      */
     const stream = new ReadableStream({
         async start(controller) {
@@ -79,13 +85,13 @@ const OpenAIStream = async (payload: OpenAIStreamPayload): Promise<ReadableStrea
             const parser = createParser(onParse);
 
             /**
-             * This code is feeding the response data from the OpenAI API to an event parser as it arrives. 
+             * This code is feeding the response data from the OpenAI API to an event parser as it arrives.
              * The `for await...of` loop is used to iterate over the response data as a stream of chunks and each chunk is decoded using
-             * a `TextDecoder` object. 
+             * a `TextDecoder` object.
              * The decoded text is then passed to the event parser using the `parser.feed()` method, which parses the text
-             * and emits events for each message received. 
+             * and emits events for each message received.
              * This allows the code to process the OpenAI API response in real-time as it arrives, rather than waiting for the entire
-             * response to be received before processing it. 
+             * response to be received before processing it.
              */
             //? Feed response data to parser as it arrives
             for await (const chunk of response as any) {

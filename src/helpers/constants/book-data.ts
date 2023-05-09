@@ -41,4 +41,4 @@ export const bookData = `
     </book>
 </content>
 </url>
-`
+`;

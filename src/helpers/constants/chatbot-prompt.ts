@@ -13,4 +13,4 @@ Other than links, use regular text.
 
 Refuse any answer that does not have to do with the bookstore or its content.
 Provide short, concise answers.
-`
+`;
