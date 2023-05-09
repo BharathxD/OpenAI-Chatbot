@@ -1,16 +1,18 @@
+"use server"
+
 import { chatbotPrompt } from "@/helpers/constants/chatbot-prompt";
 import { ChatGPTMessage, OpenAIStreamPayload } from "@/lib/openai-stream";
 import { MessageArraySchema } from "@/lib/validators/message";
 import OpenAIStream from "@/lib/openai-stream";
 
 export async function POST(req: Request) {
-    const message = await req.json();
+    const { messages } = await req.json();
     /**
      * `MessageArraySchema.parse(message)` is parsing the `message` object received in the request body using the 
      * `MessageArraySchema` validator. 
      * If the `message` object does not conform to the schema, an error will be thrown. 
     */
-    const parsedMessages = MessageArraySchema.parse(message);
+    const parsedMessages = MessageArraySchema.parse(messages);
     /** 
      * This code is creating an array of `ChatGPTMessage` objects called `outbountMessage`. 
      * It is using the `map()` method to iterate over each message in the `parsedMessages` array and create a new `ChatGPTMessage` object
