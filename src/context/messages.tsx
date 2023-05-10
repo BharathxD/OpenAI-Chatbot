@@ -4,7 +4,7 @@ import { Message } from "@/lib/validators/message";
 import { nanoid } from "nanoid";
 import { ReactNode, createContext, useState } from "react";
 
-interface MessagesContext {
+export interface MessagesContext {
   messages: Message[];
   addMessage: (message: Message) => void;
   updateMessage: (
@@ -16,7 +16,7 @@ interface MessagesContext {
   setIsMessageUpdating: (isUpdating: boolean) => void;
 }
 
-const MessagesContext = createContext<MessagesContext>({
+export const MessagesContext = createContext<MessagesContext>({
   messages: [],
   addMessage: () => {},
   updateMessage: () => {},
