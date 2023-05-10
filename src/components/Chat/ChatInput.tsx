@@ -77,7 +77,9 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
         isUserMessage: true,
         text: input,
       };
-      mutate(message);
+      if (input !== "") {
+        mutate(message);
+      }
     }
   };
   return (
