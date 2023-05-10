@@ -33,7 +33,7 @@ const MessagesProvider = ({ children }: MessageProviderProps) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: `message_${nanoid()}`,
-      text: "Hello",
+      text: "Hello, how can I help you?",
       isUserMessage: false,
     },
   ]);

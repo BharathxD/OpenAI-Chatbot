@@ -27,18 +27,24 @@ const ChatMessages: FC<ChatMessagesProps> = ({ className, ...props }) => {
             >
               <div
                 className={cn(
-                  "flex flex-col space-y-2 text-sm max-w-xs mx-2 overflow-x-hidden",
+                  "flex flex-col space-y-2 text-sm max-w-xs mx-2 my-2 overflow-x-hidden rounded-lg",
                   {
                     "bg-blue-600 text-white": message.isUserMessage,
                     "bg-gray-200 text-gray-900": !message.isUserMessage,
                   }
                 )}
               >
-                {message.text}
+                <p
+                  className={cn("px-4 py-2 rounded-lg", {
+                    "bg-blue-600 text-white": message.isUserMessage,
+                    "bg-gray-200 text-gray-900": !message.isUserMessage,
+                  })}
+                >
+                  {message.text}
+                </p>
               </div>
             </div>
-            {message.text}
-          </div>
+           </div>
         );
       })}
     </div>
