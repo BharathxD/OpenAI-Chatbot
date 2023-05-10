@@ -24,12 +24,12 @@ import { toast } from "react-hot-toast";
  * `div` element, such as `className`, `style`, `onClick`, etc.
  * This allows the `ChatInput` component to accept any props that a `div` element can accept, in addition to any custom props that may be defined specifically for the `ChatInput` component.
  */
-
 interface ChatInputProps extends HTMLAttributes<HTMLDivElement> {}
 
 const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
   const [input, setInput] = useState<string>("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
   const {
     messages,
     addMessage,
@@ -37,6 +37,7 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
     removeMessage,
     setIsMessageUpdating,
   } = useContext(MessagesContext);
+
   const { mutate, isLoading } = useMutation(sendMessage, {
     onSuccess: async (stream) => {
       if (!stream) throw new Error("No Stream Found");
@@ -69,12 +70,12 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
       addMessage(message);
     },
     onError: (_, message) => {
-      console.log("Triggered");
       toast.error("Something went wrong please try again later.");
       removeMessage(message.id);
       textareaRef.current?.focus();
     },
   });
+
   const handleMessageInput = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     //? Triggers if users performs `Enter` Keyboard event. but not `Shift` and `Enter` Event
     if (event.key === "Enter" && !event.shiftKey) {
@@ -89,6 +90,7 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
       }
     }
   };
+
   return (
     <div {...props} className={cn("border-t border-zinc-300", className)}>
       <div className="relative mt-4 flex-1 overflow-hidden rounded-lg border-none outline-none">

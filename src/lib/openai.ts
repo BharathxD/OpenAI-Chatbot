@@ -1,5 +1,6 @@
 "use server";
 
+import { ERROR_MESSAGES } from "@/helpers/constants/error";
 import { CreateChatCompletionRequest } from "openai";
 
 const OPENAI_COMPLETIONS_API_ENDPOINT =
@@ -15,7 +16,6 @@ const OPENAI_COMPLETIONS_API_ENDPOINT =
  * @returns The function `getOpenAICompletion` returns a `Promise` that resolves to a `ReadableStream`
  * of `Uint8Array` or `undefined`.
  */
-
 export const getOpenAICompletion = async (
   payload: CreateChatCompletionRequest
 ): Promise<ReadableStream<Uint8Array> | undefined> => {
@@ -33,21 +33,18 @@ export const getOpenAICompletion = async (
       OPENAI_COMPLETIONS_API_ENDPOINT,
       requestOptions
     );
+    const statusCode = response.status;
 
-    if (response.status === 401) {
-      throw new Error("Invalid Access Key");
+    if (statusCode !== 200) {
+      throw new Error(statusCode.toString());
     }
 
     if (response.ok && response.body) {
-      return response.body;
+      const responseStream = response.body as ReadableStream<Uint8Array>;
+      return responseStream;
     }
-
-    console.error(
-      `Error getting OpenAI completion. Status: ${response.status}`
-    );
   } catch (error: any) {
-    const message = error.message;
-    console.error(`Error getting OpenAI completion: ${message}`);
-    throw new Error(message);
+    console.error(`Error getting OpenAI completion: ${error.message}`);
+    throw error;
   }
 };
