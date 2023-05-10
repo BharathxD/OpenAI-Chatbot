@@ -34,6 +34,10 @@ export const getOpenAICompletion = async (
       requestOptions
     );
 
+    if (response.status === 401) {
+      throw new Error("Invalid Access Key");
+    }
+
     if (response.ok && response.body) {
       return response.body;
     }
@@ -42,6 +46,8 @@ export const getOpenAICompletion = async (
       `Error getting OpenAI completion. Status: ${response.status}`
     );
   } catch (error: any) {
-    console.error(`Error getting OpenAI completion: ${error.message}`);
+    const message = error.message;
+    console.error(`Error getting OpenAI completion: ${message}`);
+    throw new Error(message);
   }
 };

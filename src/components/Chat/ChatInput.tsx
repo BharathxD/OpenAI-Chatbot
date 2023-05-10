@@ -48,6 +48,9 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
         text: "",
       };
       addMessage(responseMessage);
+      if (typeof stream === "string") {
+        return updateMessage(messageId, (prevMessage) => prevMessage + stream);
+      }
       const decoder = new TextDecoder();
       const reader = stream.getReader();
       while (true) {
