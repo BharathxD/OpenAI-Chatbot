@@ -64,8 +64,8 @@ export async function POST(req: Request, res: Response) {
    */
   return new Response(stream, {
     headers: {
-      'Transfer-Encoding': 'chunked',
-      'Content-Type': 'application/json'
-    }
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "application/json",
+    },
   });
 }

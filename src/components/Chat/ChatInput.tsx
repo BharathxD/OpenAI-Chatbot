@@ -16,6 +16,7 @@ import { sendMessage } from "@/api";
 import { MessagesContext } from "@/context/messages";
 import { Message } from "@/lib/validators/message";
 import { CornerDownLeft, Loader2 } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 /**
  *  The `interface ChatInputProps` is defining the props that can be passed to the `ChatInput` component.
@@ -64,8 +65,11 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
       setInput("");
       addMessage(message);
     },
-    onError: () => {
-      console.error("Error sending the message!");
+    onError: (_, message) => {
+      console.log("Triggered");
+      toast.error("Something went wrong please try again later.");
+      removeMessage(message.id);
+      textareaRef.current?.focus();
     },
   });
   const handleMessageInput = (event: KeyboardEvent<HTMLTextAreaElement>) => {

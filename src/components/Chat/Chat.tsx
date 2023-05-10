@@ -25,7 +25,7 @@ const Chat = () => {
             </AccordionTrigger>
             <AccordionContent>
               <div className="flex flex-col h-80">
-                <ChatMessages className="px-2 py-3 flex-1"/>
+                <ChatMessages className="px-2 py-3 flex-1" />
                 <ChatInput className="px-4" />
               </div>
             </AccordionContent>
