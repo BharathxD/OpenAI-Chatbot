@@ -1,21 +1,37 @@
+"use server"
+
 import {
     ParsedEvent,
     ReconnectInterval,
     createParser,
 } from "eventsource-parser";
 import { getOpenAICompletion } from "./openai";
-import { CreateChatCompletionRequest, CreateChatCompletionResponse } from "openai";
+import { CreateChatCompletionRequest } from "openai";
 
-// Define function to create OpenAI stream
+/**
+ * Creates a ReadableStream of Uint8Array by enqueuing encoded text data obtained from the OpenAI completions API response.
+ *
+ * @param {CreateChatCompletionRequest} payload - An object containing the information needed to generate a chat completion using the
+ * OpenAI API. It includes the prompt text, maximum token count, and optional parameters like temperature and stop sequence.
+ *
+ * @returns {Promise<ReadableStream<Uint8Array>>} - A promise that resolves to a ReadableStream of Uint8Array representing the stream of
+ * encoded text data obtained from the OpenAI API response.
+ */
 const OpenAIStream = async (
     payload: CreateChatCompletionRequest
-): Promise<ReadableStream<any>> => {
-    // Initialize encoder and decoder for text encoding/decoding
+): Promise<ReadableStream<Uint8Array>> => {
     const encoder = new TextEncoder();
     const decoder = new TextDecoder();
     let counter = 0;
 
-    // Get OpenAI completion response
+    /**
+     * Sends a POST request to the OpenAI completions API endpoint with the provided payload and returns a ReadableStream of Uint8Array
+     * or undefined.
+     * @param {CreateChatCompletionRequest} payload - An object containing the information needed to generate a chat completion using the
+     * OpenAI API. It includes the prompt text, maximum token count, and optional parameters like temperature and stop sequence.
+     * @returns {Promise<ReadableStream<Uint8Array> | undefined>} - A promise that resolves to a ReadableStream of Uint8Array or
+     * undefined in case of errors.
+    */
     const response: ReadableStream<Uint8Array> | undefined = await getOpenAICompletion(payload);
 
     /**
@@ -47,23 +63,21 @@ const OpenAIStream = async (
                      * @see https://platform.openai.com/docs/api-reference/completions/create#completions/create-stream
                      */
                     if (data === "[DONE]") {
-                        controller.close();
-                        return;
+                        return controller.close();
                     }
                     try {
+                        // Parse the Data, Text -> JSON
                         const json = JSON.parse(data);
-                        const text = json.choices[0].delta?.content || "";
+                        // Extract the Content
+                        const text = (json.choices[0]?.delta?.content) || '';
+                        // If fewer than 2 messages [Initially Zero] have been sent and the text contains a newline character, skip it
                         if (counter < 2 && (text.match(/\n/) || []).length) {
-                            /**
-                             * This is a prefix character (i.e., "\n\n"), do nothing
-                             * If fewer than 2 messages have been sent and the text contains a newline
-                             * character, skip it
-                             */
                             return;
                         }
                         // Encode text and enqueue it in the stream
                         const queue = encoder.encode(text);
                         controller.enqueue(queue);
+                        // Increment the counter
                         counter++;
                     } catch (error: any) {
                         // Log any errors encountered
@@ -85,6 +99,7 @@ const OpenAIStream = async (
              * response to be received before processing it.
              */
             for await (const chunk of response as any) {
+                // Decode and feed it to the Parser
                 parser.feed(decoder.decode(chunk));
             }
         },
