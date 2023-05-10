@@ -17,9 +17,5 @@ export const sendMessage = async (
   if (!response.ok) {
     throw new Error(`Failed to send message: ${response.statusText}`);
   }
-  if (response.body) {
-    return response.body;
-  } else {
-    throw new Error("No response body found.");
-  }
+  return response.body;
 };

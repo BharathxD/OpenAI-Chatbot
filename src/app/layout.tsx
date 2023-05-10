@@ -2,6 +2,7 @@ import Chat from "@/components/Chat/Chat";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import Providers from "@/components/Providers";
+import MessagesProvider from "@/context/messages";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,12 +19,14 @@ export default function RootLayout({
   //? Set `suppressHydrationWarning={true}`, as an unwanted extension in the browser is passing unwanted attributes
   return (
     <html lang="en">
-      <Providers>
-        <body className={inter.className} suppressHydrationWarning={true}>
-          <Chat />
-          {children}
-        </body>
-      </Providers>
+      <MessagesProvider>
+        <Providers>
+          <body className={inter.className} suppressHydrationWarning={true}>
+            <Chat />
+            {children}
+          </body>
+        </Providers>
+      </MessagesProvider>
     </html>
   );
 }

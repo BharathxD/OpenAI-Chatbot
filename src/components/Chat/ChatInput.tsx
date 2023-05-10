@@ -30,7 +30,6 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
         console.log(chunkValue);
       }
     },
-
     onError: () => {
       console.error("Error sending the message!");
     },

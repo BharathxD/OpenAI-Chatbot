@@ -1,6 +1,8 @@
+"use client";
+
 import { Message } from "@/lib/validators/message";
 import { nanoid } from "nanoid";
-import { FC, ReactNode, createContext, useState } from "react";
+import { ReactNode, createContext, useState } from "react";
 
 interface MessagesContext {
   messages: Message[];
