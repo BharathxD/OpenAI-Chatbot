@@ -2,12 +2,10 @@
 
 import { cn } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 import { FC, HTMLAttributes, KeyboardEvent, useState } from "react";
 import { nanoid } from "nanoid";
 import TextareaAutosize from "react-textarea-autosize";
 import { sendMessage } from "@/api";
-import { Message } from "@/lib/validators/message";
 
 /**
  *  The `interface ChatInputProps` is defining the props that can be passed to the `ChatInput` component.
@@ -23,6 +21,14 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
   const { mutate, isLoading } = useMutation(sendMessage, {
     onSuccess: async (stream) => {
       if (!stream) throw new Error("No Stream Found");
+      const decoder = new TextDecoder();
+      const reader = stream.getReader();
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        const chunkValue = decoder.decode(value);
+        console.log(chunkValue);
+      }
     },
 
     onError: () => {

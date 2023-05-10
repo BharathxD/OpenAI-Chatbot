@@ -1,8 +1,9 @@
-"use server"
+"use server";
 
 import { CreateChatCompletionRequest } from "openai";
 
-const OPENAI_COMPLETIONS_API_ENDPOINT = "https://api.openai.com/v1/chat/completions";
+const OPENAI_COMPLETIONS_API_ENDPOINT =
+  "https://api.openai.com/v1/chat/completions";
 
 /**
  * This function sends a POST request to the OpenAI completions API endpoint with a payload and returns
@@ -18,9 +19,7 @@ const OPENAI_COMPLETIONS_API_ENDPOINT = "https://api.openai.com/v1/chat/completi
 export const getOpenAICompletion = async (
   payload: CreateChatCompletionRequest
 ): Promise<ReadableStream<Uint8Array> | undefined> => {
-
   try {
-
     const requestOptions = {
       method: "POST",
       headers: {
@@ -30,16 +29,19 @@ export const getOpenAICompletion = async (
       body: JSON.stringify(payload),
     };
 
-    const response = await fetch(OPENAI_COMPLETIONS_API_ENDPOINT, requestOptions);
+    const response = await fetch(
+      OPENAI_COMPLETIONS_API_ENDPOINT,
+      requestOptions
+    );
 
     if (response.ok && response.body) {
       return response.body;
     }
 
-    console.error(`Error getting OpenAI completion. Status: ${response.status}`);
-
+    console.error(
+      `Error getting OpenAI completion. Status: ${response.status}`
+    );
   } catch (error: any) {
     console.error(`Error getting OpenAI completion: ${error.message}`);
   }
-
 };

@@ -18,22 +18,7 @@ export const sendMessage = async (
     throw new Error(`Failed to send message: ${response.statusText}`);
   }
   if (response.body) {
-    const decoder = new TextDecoder();
-    const reader = response.body.getReader();
-    try {
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        const chunkValue = decoder.decode(value);
-        console.log(chunkValue);
-      }
-      return response.body;
-    } catch (error) {
-      console.error("Error occurred while reading the response body:", error);
-      return null;
-    } finally {
-      reader.releaseLock();
-    }
+    return response.body;
   } else {
     throw new Error("No response body found.");
   }
