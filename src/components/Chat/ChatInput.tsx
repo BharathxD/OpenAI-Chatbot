@@ -16,7 +16,6 @@ import { sendMessage } from "@/api";
 import { MessagesContext } from "@/context/messages";
 import { Message } from "@/lib/validators/message";
 import { CornerDownLeft, Loader2 } from "lucide-react";
-import { toast } from "react-hot-toast";
 
 /**
  *  The `interface ChatInputProps` is defining the props that can be passed to the `ChatInput` component.
@@ -30,13 +29,8 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
   const [input, setInput] = useState<string>("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const {
-    messages,
-    addMessage,
-    updateMessage,
-    removeMessage,
-    setIsMessageUpdating,
-  } = useContext(MessagesContext);
+  const { addMessage, updateMessage, removeMessage, setIsMessageUpdating } =
+    useContext(MessagesContext);
 
   const { mutate, isLoading } = useMutation(sendMessage, {
     onSuccess: async (stream) => {
@@ -89,7 +83,6 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
       addMessage(message);
     },
     onError: (_, message) => {
-      toast.error("Something went wrong please try again later.");
       removeMessage(message.id);
       textareaRef.current?.focus();
     },
@@ -118,11 +111,11 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
     <div {...props} className={cn("border-t border-zinc-300", className)}>
       <div className="relative mt-4 flex-1 overflow-hidden rounded-lg border-none outline-none">
         <TextareaAutosize
-          onKeyDown={(event) => handleMessageInput(event)}
+          onKeyDown={handleMessageInput}
           rows={2}
           ref={textareaRef}
           maxRows={4}
-          placeholder={"Write a message..."}
+          placeholder="Write a message..."
           value={input}
           disabled={isLoading}
           onChange={(event) => setInput(event.target.value)}
@@ -132,7 +125,7 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
         <div className="absolute inset-y-0 right-0 flex py-1.5 pr-1.5">
           <kbd className="inline-flex items-center rounded border bg-white border-gray-200 px-1 font-sans text-xs text-gray-400">
             {isLoading ? (
-              <Loader2 className="w-3 -h-3 animate-spin" />
+              <Loader2 className="w-3 h-3 animate-spin" />
             ) : (
               <CornerDownLeft className="w-3 h-3" />
             )}
