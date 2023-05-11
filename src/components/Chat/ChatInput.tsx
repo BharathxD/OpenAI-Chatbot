@@ -40,8 +40,12 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
 
   const { mutate, isLoading } = useMutation(sendMessage, {
     onSuccess: async (stream) => {
-      if (!stream) throw new Error("No Stream Found");
+      if (!stream) {
+        throw new Error("No Stream Found");
+      }
+
       setIsMessageUpdating(true);
+
       const messageId = `message_${nanoid()}`;
       const responseMessage: Message = {
         id: messageId,
@@ -49,18 +53,33 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
         text: "",
       };
       addMessage(responseMessage);
+
+      const processStream = async (
+        stream: ReadableStreamDefaultReader<Uint8Array>
+      ) => {
+        const decoder = new TextDecoder();
+
+        while (true) {
+          const { value, done } = await stream.read();
+
+          if (done) {
+            break;
+          }
+
+          const chunkValue = decoder.decode(value);
+          updateMessage(messageId, (prevMessage) => prevMessage + chunkValue);
+        }
+      };
+
       if (typeof stream === "string") {
-        return updateMessage(messageId, (prevMessage) => prevMessage + stream);
+        updateMessage(messageId, (prevMessage) => prevMessage + stream);
+      } else {
+        const reader = stream.getReader();
+        await processStream(reader);
       }
-      const decoder = new TextDecoder();
-      const reader = stream.getReader();
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        const chunkValue = decoder.decode(value);
-        updateMessage(messageId, (prevMessage) => prevMessage + chunkValue);
-      }
+
       setIsMessageUpdating(false);
+
       setTimeout(() => {
         textareaRef.current?.focus();
       }, 10);
