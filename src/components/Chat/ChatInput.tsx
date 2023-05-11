@@ -77,15 +77,19 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
   });
 
   const handleMessageInput = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-    //? Triggers if users performs `Enter` Keyboard event. but not `Shift` and `Enter` Event
-    if (event.key === "Enter" && !event.shiftKey) {
+    const isEnterKey = event.key === "Enter";
+    const isShiftKey = event.shiftKey;
+
+    if (isEnterKey && !isShiftKey) {
       event.preventDefault();
-      const message = {
-        id: `message_${nanoid()}`,
-        isUserMessage: true,
-        text: input,
-      };
+      const input = event.currentTarget.value.trim();
+
       if (input !== "") {
+        const message = {
+          id: `message_${nanoid()}`,
+          isUserMessage: true,
+          text: input,
+        };
         mutate(message);
       }
     }

@@ -63,8 +63,8 @@ export async function POST(req: Request, _: Response) {
       },
     });
   } catch (error: any) {
-    const errorMessage = "Something went wrong";
     const statusCode = parseInt(error.message) || 500;
+    const errorMessage = "Something went wrong";
     return new Response(errorMessage, {
       status: statusCode,
     });
